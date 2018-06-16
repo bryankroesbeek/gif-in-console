@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace GifInConsole
 {
-    class ImageToolbox
+    class ImageConverter
     {
         public static Color[,] GetColorsFromImage(Image input)
         {
