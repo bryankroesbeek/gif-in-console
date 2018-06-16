@@ -8,7 +8,7 @@ namespace GifInConsole
 {
     class Program
     {
-        const string WhiteToBlack = " .:-=+*#%@";
+        public const string WhiteToBlack = " .:-=+*#%@$";
 
         static void Main(string[] args)
         {
