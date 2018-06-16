@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace GifInConsole
 {
-    class ImageConverter
+    public static class ImageConverter
     {
         public static Color[,] GetColorsFromImage(Image input)
         {
@@ -39,6 +39,28 @@ namespace GifInConsole
                 }
             }
             return b;
+        }
+
+        public static char[,] ConvertToConsoleImage(this Color[,] greyInput)
+        {
+            var chars = Program.WhiteToBlack.ToArray();
+
+            int width = greyInput.GetLength(0);
+            int height = greyInput.GetLength(1);
+
+            var newImage = new char[width, height];
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    var grey = greyInput[x, y].G;
+
+                    int asciiTokenNumber = (grey * 10) % 255;
+                    newImage[x, y] = chars[asciiTokenNumber];
+                }
+            }
+            return newImage;
         }
     }
 }
