@@ -3,29 +3,47 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace GifInConsole
 {
     class ImageViewer
     {
-        private Image Image { get; set; }
+        private string[] Image { get; set; }
 
-        public ImageViewer(Image i)
+        public ImageViewer(string[] i)
         {
             this.Image = i;
         }
 
-        public void View()
+        public void View(float framerate)
         {
-            Form window = new Form();
-            window.Controls.Add(new PictureBox
+            new Task(CheckForExit).Start();
+
+            var length = this.Image.Length;
+
+            while (true)
             {
-                Image = this.Image,
-                Dock = DockStyle.Fill
-            });
-            Application.Run(window);
+                Console.Clear();
+                foreach (string image in this.Image)
+                {
+                    Console.SetCursorPosition(0, 0);
+                    Console.WriteLine(image);
+                    Thread.Sleep((int) ((1f / framerate) * 1000));
+                }
+            }
+        }
+
+        public void CheckForExit()
+        {
+            bool shouldExit = false;
+            while (!shouldExit)
+            {
+                var input = Console.ReadLine();
+                if (input == "q" || input == "quit" || input == "exit") shouldExit = true;
+            }
+            Environment.Exit(0);
         }
     }
 }
