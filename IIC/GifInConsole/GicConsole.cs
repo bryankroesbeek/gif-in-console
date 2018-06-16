@@ -29,16 +29,16 @@ namespace GifInConsole
 
             for (int i = 0; i < count; i++)
             {
-                this.Image.SelectActiveFrame(this.Dimension, 50);
+                this.Image.SelectActiveFrame(this.Dimension, i);
 
                 var pixels = ImageConverter.GetColorsFromImage(this.Image);
                 pixels = pixels.ToGrey();
 
                 var size = ((float)horizontalSizeChoice) / pixels.GetLength(0);
-                var asciiImage = pixels.ResizeByFactor(size).ConvertToConsoleImage().AsciiImageToString();
+                images.Add(pixels.ResizeByFactor(size).ConvertToConsoleImage().AsciiImageToString());
             }
 
-            new ImageViewer(images.ToArray()).View();
+            new ImageViewer(images.ToArray()).View(20);
         }
 
         private int GetInput()
