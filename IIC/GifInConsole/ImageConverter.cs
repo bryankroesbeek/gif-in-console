@@ -13,12 +13,12 @@ namespace GifInConsole
         {
             Bitmap image = new Bitmap(input);
 
-            Color[,] pixels = new Color[image.Width, image.Height];
-            for (int x = 0; x < image.Width; x++)
+            Color[,] pixels = new Color[image.Height, image.Width];
+            for (int y = 0; y < image.Height; y++)
             {
-                for (int y = 0; y < image.Height; y++)
+                for (int x = 0; x < image.Width; x++)
                 {
-                    pixels[x, y] = image.GetPixel(x, y);
+                    pixels[y, x] = image.GetPixel(x, y);
                 }
             }
             return pixels;
@@ -29,13 +29,13 @@ namespace GifInConsole
             int width = pixels.GetLength(0);
             int height = pixels.GetLength(1);
 
-            Bitmap b = new Bitmap(width, height);
+            Bitmap b = new Bitmap(height, width);
 
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
-                    b.SetPixel(x, y, pixels[x, y]);
+                    b.SetPixel(x, y, pixels[y, x]);
                 }
             }
             return b;
@@ -48,16 +48,16 @@ namespace GifInConsole
             int width = greyInput.GetLength(0);
             int height = greyInput.GetLength(1);
 
-            var newImage = new char[width, height];
+            var newImage = new char[height, width];
 
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
                     var grey = greyInput[x, y].G;
 
-                    int asciiTokenNumber = (grey * 10) % 255;
-                    newImage[x, y] = chars[asciiTokenNumber];
+                    int asciiTokenNumber = (grey * 10) / 255;
+                    newImage[y, x] = chars[asciiTokenNumber];
                 }
             }
             return newImage;
@@ -70,10 +70,11 @@ namespace GifInConsole
 
             string newImage = "";
 
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
+                    newImage += greyInput[x, y];
                     newImage += greyInput[x, y];
                 }
                 newImage += "\n";

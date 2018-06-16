@@ -11,15 +11,15 @@ namespace GifInConsole
     {
         public static Color[,] ToGrey(this Color[,] pixels)
         {
-            var newPixels = new Color[pixels.GetLength(0), pixels.GetLength(1)];
+            var newPixels = new Color[pixels.GetLength(1), pixels.GetLength(0)];
 
-            for (int x = 0; x < pixels.GetLength(0); x++)
+            for (int y = 0; y < pixels.GetLength(1); y++)
             {
-                for (int y = 0; y < pixels.GetLength(1); y++)
+                for (int x = 0; x < pixels.GetLength(0); x++)
                 {
                     Color pixel = pixels[x, y];
                     byte ac = (byte)((pixel.R + pixel.G + pixel.B) / 3);
-                    newPixels[x, y] = Color.FromArgb(ac, ac, ac);
+                    newPixels[y, x] = Color.FromArgb(ac, ac, ac);
                 }
             }
             return newPixels;
@@ -33,20 +33,20 @@ namespace GifInConsole
             int newWidth = (int)(width * factor - factor);
             int newHeight = (int)(height * factor - factor);
 
-            var newPixels = new Color[newWidth, newHeight];
+            var newPixels = new Color[newHeight, newWidth];
 
-            for (int x = 0; x < newWidth; x++)
+            for (int y = 0; y < newHeight; y++)
             {
-                for (int y = 0; y < newHeight; y++)
+                for (int x = 0; x < newWidth; x++)
                 {
-                    int nearestX = (int) Math.Round(x / factor);
-                    int nearestY = (int) Math.Round(y / factor);
+                    int nearestX = (int)Math.Round(x / factor);
+                    int nearestY = (int)Math.Round(y / factor);
 
                     byte r = pixels[nearestX, nearestY].R;
                     byte g = pixels[nearestX, nearestY].G;
                     byte b = pixels[nearestX, nearestY].B;
 
-                    newPixels[x, y] = Color.FromArgb(r, g, b);
+                    newPixels[y, x] = Color.FromArgb(r, g, b);
                 }
             }
             return newPixels;
