@@ -48,6 +48,8 @@ namespace GifInConsole
             int width = greyInput.GetLength(0);
             int height = greyInput.GetLength(1);
 
+            float range = (255f / (Program.WhiteToBlack.Length - 1));
+
             var newImage = new char[height, width];
 
             for (int y = 0; y < height; y++)
@@ -55,9 +57,8 @@ namespace GifInConsole
                 for (int x = 0; x < width; x++)
                 {
                     var grey = greyInput[x, y].G;
-
-                    int asciiTokenNumber = (grey * 10) / 255;
-                    newImage[y, x] = chars[asciiTokenNumber];
+                    
+                    newImage[y, x] = chars[(int)(grey / range)];
                 }
             }
             return newImage;
