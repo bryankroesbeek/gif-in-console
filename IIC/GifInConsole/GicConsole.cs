@@ -25,7 +25,7 @@ namespace GifInConsole
 
             var count = this.Image.GetFrameCount(this.Dimension);
 
-            List<Image> images = new List<Image>();
+            List<char[,]> images = new List<char[,]>();
 
             for (int i = 0; i < count; i++)
             {
@@ -33,10 +33,9 @@ namespace GifInConsole
 
                 var pixels = ImageConverter.GetColorsFromImage(this.Image);
                 pixels = ImageToolbox.ToGrey(pixels);
-                var size = 25f / pixels.GetLength(0);
+                var size = 75f / pixels.GetLength(0);
 
-                pixels = pixels.ResizeByFactor(size);
-                images.Add(ImageConverter.GetBitmapFromPixels(pixels));
+                var thing  = pixels.ResizeByFactor(size).ConvertToConsoleImage();
             }
             this.Image.FrameDimensionsList[0] = this.Dimension.Guid;
 
