@@ -25,19 +25,18 @@ namespace GifInConsole
 
             var count = this.Image.GetFrameCount(this.Dimension);
 
-            List<char[,]> images = new List<char[,]>();
+            List<string> images = new List<string>();
 
             for (int i = 0; i < count; i++)
             {
                 this.Image.SelectActiveFrame(this.Dimension, 50);
 
                 var pixels = ImageConverter.GetColorsFromImage(this.Image);
-                pixels = ImageToolbox.ToGrey(pixels);
-                var size = 75f / pixels.GetLength(0);
+                pixels = pixels.ToGrey();
 
-                var thing  = pixels.ResizeByFactor(size).ConvertToConsoleImage();
+                var size = ((float)horizontalSizeChoice) / pixels.GetLength(0);
+                var asciiImage = pixels.ResizeByFactor(size).ConvertToConsoleImage().AsciiImageToString();
             }
-            this.Image.FrameDimensionsList[0] = this.Dimension.Guid;
 
             new ImageViewer(images.ToArray()).View();
         }

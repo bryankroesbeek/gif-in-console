@@ -62,5 +62,23 @@ namespace GifInConsole
             }
             return newImage;
         }
+
+        public static string AsciiImageToString(this char[,] greyInput)
+        {
+            int width = greyInput.GetLength(0);
+            int height = greyInput.GetLength(1);
+
+            string newImage = "";
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    newImage += greyInput[x, y];
+                }
+                newImage += "\n";
+            }
+            return newImage;
+        }
     }
 }
