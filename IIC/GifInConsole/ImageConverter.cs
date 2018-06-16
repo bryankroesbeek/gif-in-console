@@ -23,28 +23,5 @@ namespace GifInConsole
             }
             return pixels;
         }
-
-        public static string ConvertToConsoleImage(this Color[,] greyInput)
-        {
-            var chars = Program.WhiteToBlack.ToArray();
-
-            int width = greyInput.GetLength(0);
-            int height = greyInput.GetLength(1);
-
-            float range = (255f / (Program.WhiteToBlack.Length - 1));
-
-            var newImage = "";
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    var grey = greyInput[x, y].G;
-                    
-                    newImage += chars[(int)(grey / range)];
-                }
-            }
-            return newImage;
-        }
     }
 }

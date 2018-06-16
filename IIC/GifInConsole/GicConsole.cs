@@ -32,10 +32,11 @@ namespace GifInConsole
                 this.Image.SelectActiveFrame(this.Dimension, i);
 
                 var pixels = ImageConverter.GetColorsFromImage(this.Image);
-                pixels = pixels.ToGrey();
 
                 var size = ((float)horizontalSizeChoice) / pixels.GetLength(0);
-                images.Add(pixels.ResizeByFactor(size).ConvertToConsoleImage().AsciiImageToString());
+                images.Add(pixels.ConvertToConsoleImage(size));
+                Console.WriteLine($"Finished frame {i + 1}/{count}");
+                Console.CursorTop = Console.CursorTop - 1;
             }
 
             new ImageViewer(images.ToArray()).View(20);
