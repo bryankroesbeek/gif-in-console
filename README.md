@@ -7,6 +7,7 @@ This inspired me to try and create such an application myself.
 
 Basically all you need to do is:
 ```dotnet restore```
+
 This install the dependencies needed to run this project
 
 ## Other details
