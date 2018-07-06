@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GifInConsole
+namespace GifInConsole.ImageTools
 {
     class ImageViewer
     {
