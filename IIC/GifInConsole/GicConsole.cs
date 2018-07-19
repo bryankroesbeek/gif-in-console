@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using GifInConsole.ImageTools;
+using GifInConsole.ImageTypes;
 
 namespace GifInConsole
 {
@@ -12,12 +13,21 @@ namespace GifInConsole
     {
         Image Image { get; set; }
         FrameDimension Dimension { get; set; }
-        Color[,] ImageData { get; set; }
+        Pixel[][] ImageData { get; set; }
 
         public GicConsole(string imagePath)
         {
             this.Image = Image.FromFile(imagePath);
             this.Dimension = new FrameDimension(this.Image.FrameDimensionsList.First());
+
+            var count = this.Image.GetFrameCount(this.Dimension);
+            this.ImageData = new Pixel[count][];
+
+            for (int i = 0; i < count; i++)
+            {
+                this.Image.SelectActiveFrame(this.Dimension, i);
+                this.ImageData[i] = ImageConverter.GetColorsFromImage(this.Image).Cast<Pixel>().ToArray();
+            }
         }
 
         public void Run()
@@ -26,21 +36,22 @@ namespace GifInConsole
 
             var count = this.Image.GetFrameCount(this.Dimension);
 
+            int width = Image.Width;
+            int height = Image.Height;
+
             List<string> images = new List<string>();
 
-            for (int i = 0; i < count; i++)
+            var imgs = this.ImageData.Select((imges, i) =>
             {
-                this.Image.SelectActiveFrame(this.Dimension, i);
+                var size = ((float)horizontalSizeChoice) / width;
+                int stringSize = CppWrapper.newSize(this.ImageData[i].Length, width, size);
+                StringBuilder stringImage = new StringBuilder(stringSize);
 
-                var pixels = ImageConverter.GetColorsFromImage(this.Image);
+                CppWrapper.getStringForPixels(this.ImageData[i], this.ImageData[i].Length, width, stringImage, Program.WhiteToBlack, Program.WhiteToBlack.Length, size);
+                return stringImage.ToString();
+            }).ToArray();
 
-                var size = ((float)horizontalSizeChoice) / pixels.GetLength(0);
-                images.Add(pixels.ConvertToConsoleImage(size));
-                Console.WriteLine($"Finished frame {i + 1}/{count}");
-                Console.CursorTop = Console.CursorTop - 1;
-            }
-
-            new ImageViewer(images.ToArray()).View(20);
+            new ImageViewer(imgs).View(20);
         }
 
         private int GetInput()
