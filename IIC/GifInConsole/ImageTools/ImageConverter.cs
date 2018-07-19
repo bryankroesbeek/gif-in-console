@@ -4,21 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using GifInConsole.ImageTypes;
 
 namespace GifInConsole.ImageTools
 {
     public static class ImageConverter
     {
-        public static Color[,] GetColorsFromImage(Image input)
+        public static Pixel[,] GetColorsFromImage(Image input)
         {
             Bitmap image = new Bitmap(input);
 
-            Color[,] pixels = new Color[image.Height, image.Width];
+            Pixel[,] pixels = new Pixel[image.Height, image.Width];
             for (int y = 0; y < image.Height; y++)
             {
                 for (int x = 0; x < image.Width; x++)
                 {
-                    pixels[y, x] = image.GetPixel(x, y);
+                    var pixel = image.GetPixel(x, y);
+                    pixels[y, x] = new Pixel {
+                        R = pixel.R,
+                        G = pixel.G,
+                        B = pixel.B
+                    };
                 }
             }
             return pixels;
