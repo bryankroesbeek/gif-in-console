@@ -9,4 +9,10 @@
     <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="lib/imgProcessor.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
