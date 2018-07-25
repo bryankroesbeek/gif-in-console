@@ -11,22 +11,35 @@ namespace GifInConsole
 {
     class GicConsole
     {
-        Image Image { get; set; }
+        Bitmap InputImage { get; set; }
         FrameDimension Dimension { get; set; }
         Pixel[][] ImageData { get; set; }
 
         public GicConsole(string imagePath)
         {
-            this.Image = Image.FromFile(imagePath);
-            this.Dimension = new FrameDimension(this.Image.FrameDimensionsList.First());
+            this.InputImage = (Bitmap)Image.FromFile(imagePath);
+            this.Dimension = new FrameDimension(this.InputImage.FrameDimensionsList.First());
 
-            var count = this.Image.GetFrameCount(this.Dimension);
+            var count = this.InputImage.GetFrameCount(this.Dimension);
             this.ImageData = new Pixel[count][];
+
+            var ImageRectangle = new Rectangle(0, 0, this.InputImage.Width, this.InputImage.Height);
+            var length = this.InputImage.Width * this.InputImage.Height;
 
             for (int i = 0; i < count; i++)
             {
-                this.Image.SelectActiveFrame(this.Dimension, i);
-                this.ImageData[i] = ImageConverter.GetColorsFromImage(this.Image).Cast<Pixel>().ToArray();
+                this.InputImage.SelectActiveFrame(this.Dimension, i);
+                var locked = this.InputImage.LockBits(ImageRectangle, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+
+                var bitmapDataAddress = locked.Scan0;
+                var pixels = new Pixel[this.InputImage.Width * this.InputImage.Height];
+
+                for (int pI = 0; pI < length; pI += 1)
+                {
+                    pixels[pI] = CppWrapper.getPixels(bitmapDataAddress, pI * 3);
+                }
+
+                this.ImageData[i] = pixels;//ImageConverter.GetColorsFromImage(this.InputImage).Cast<Pixel>().ToArray();
             }
         }
 
@@ -34,10 +47,10 @@ namespace GifInConsole
         {
             int horizontalSizeChoice = GetInput();
 
-            var count = this.Image.GetFrameCount(this.Dimension);
+            var count = this.InputImage.GetFrameCount(this.Dimension);
 
-            int width = Image.Width;
-            int height = Image.Height;
+            int width = InputImage.Width;
+            int height = InputImage.Height;
 
             List<string> images = new List<string>();
 

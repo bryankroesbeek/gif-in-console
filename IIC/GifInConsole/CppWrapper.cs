@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -13,5 +14,8 @@ namespace GifInConsole
 
         [DllImport("lib/imgProcessor.dll")]
         public static extern int newSize(int length, int horizontalLength, float factor);
+
+        [DllImport("lib/imgProcessor.dll")]
+        public static extern Pixel getPixels(IntPtr bytes, int chosenIndex);
     }
 }

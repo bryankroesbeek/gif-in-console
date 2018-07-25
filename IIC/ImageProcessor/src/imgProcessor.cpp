@@ -11,6 +11,15 @@ struct Pixel
 
 extern "C"
 {
+    Pixel getPixels(unsigned char *imageBytes, int pixelIndex)
+    {
+        Pixel p = Pixel();
+        p.R = (int)imageBytes[pixelIndex + 0];
+        p.G = (int)imageBytes[pixelIndex + 1];
+        p.B = (int)imageBytes[pixelIndex + 2];
+        return p;
+    }
+
     int newSize(int length, int horizontalLength, float factor)
     {
         int width = horizontalLength * factor;
