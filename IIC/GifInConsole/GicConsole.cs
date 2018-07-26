@@ -11,60 +11,43 @@ namespace GifInConsole
 {
     class GicConsole
     {
-        Bitmap InputImage { get; set; }
-        FrameDimension Dimension { get; set; }
-        Pixel[][] ImageData { get; set; }
+        Bitmap InputImage { get; }
+        FrameDimension Dimension { get; }
+        int FrameCount { get; }
+        int PixelCount { get; }
+        Rectangle ImageRectangle { get; }
 
         public GicConsole(string imagePath)
         {
             this.InputImage = (Bitmap)Image.FromFile(imagePath);
             this.Dimension = new FrameDimension(this.InputImage.FrameDimensionsList.First());
-
-            var count = this.InputImage.GetFrameCount(this.Dimension);
-            this.ImageData = new Pixel[count][];
-
-            var ImageRectangle = new Rectangle(0, 0, this.InputImage.Width, this.InputImage.Height);
-            var length = this.InputImage.Width * this.InputImage.Height;
-
-            for (int i = 0; i < count; i++)
-            {
-                this.InputImage.SelectActiveFrame(this.Dimension, i);
-                var locked = this.InputImage.LockBits(ImageRectangle, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-
-                var bitmapDataAddress = locked.Scan0;
-                var pixels = new Pixel[this.InputImage.Width * this.InputImage.Height];
-
-                for (int pI = 0; pI < length; pI += 1)
-                {
-                    pixels[pI] = CppWrapper.getPixels(bitmapDataAddress, pI * 3);
-                }
-
-                this.ImageData[i] = pixels;//ImageConverter.GetColorsFromImage(this.InputImage).Cast<Pixel>().ToArray();
-            }
+            this.FrameCount = this.InputImage.GetFrameCount(this.Dimension);
+            this.ImageRectangle = new Rectangle(0, 0, this.InputImage.Width, this.InputImage.Height);
+            this.PixelCount = this.InputImage.Width * this.InputImage.Height;
         }
 
         public void Run()
         {
             int horizontalSizeChoice = GetInput();
 
-            var count = this.InputImage.GetFrameCount(this.Dimension);
-
             int width = InputImage.Width;
             int height = InputImage.Height;
 
-            List<string> images = new List<string>();
+            var factor = ((float)horizontalSizeChoice) / width;
 
-            var imgs = this.ImageData.Select((imges, i) =>
+            string[] stringImages = new string[this.FrameCount];
+
+            for (int i = 0; i < this.FrameCount; i++)
             {
-                var size = ((float)horizontalSizeChoice) / width;
-                int stringSize = CppWrapper.newSize(this.ImageData[i].Length, width, size);
-                StringBuilder stringImage = new StringBuilder(stringSize);
+                this.InputImage.SelectActiveFrame(this.Dimension, i);
+                var lockedPixels = this.InputImage.LockBits(this.ImageRectangle, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+                StringBuilder stringImage = new StringBuilder((int)(this.PixelCount / factor + (height / factor)));
+                CppWrapper.getStringForPixelBytes(lockedPixels.Scan0, this.PixelCount, width, factor, stringImage, Program.WhiteToBlack, Program.WhiteToBlack.Length - 1);
+                stringImages[i] = stringImage.ToString();
+                this.InputImage.UnlockBits(lockedPixels);
+            }
 
-                CppWrapper.getStringForPixels(this.ImageData[i], this.ImageData[i].Length, width, stringImage, Program.WhiteToBlack, Program.WhiteToBlack.Length, size);
-                return stringImage.ToString();
-            }).ToArray();
-
-            new ImageViewer(imgs).View(20);
+            new ImageViewer(stringImages).View(15);
         }
 
         private int GetInput()

@@ -10,12 +10,6 @@ namespace GifInConsole
     public class CppWrapper
     {
         [DllImport("lib/imgProcessor.dll")]
-        public static extern int getStringForPixels(Pixel[] pixels, int length, int horizontalLength, StringBuilder outputString, string asciiToken, int aLength, float factor);
-
-        [DllImport("lib/imgProcessor.dll")]
-        public static extern int newSize(int length, int horizontalLength, float factor);
-
-        [DllImport("lib/imgProcessor.dll")]
-        public static extern Pixel getPixels(IntPtr bytes, int chosenIndex);
+        public static extern int getStringForPixelBytes(IntPtr PixelsAddress, int length, int xLength, float factor, StringBuilder output, string charForPixels, int charLength);
     }
 }
